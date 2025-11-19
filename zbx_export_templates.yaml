@@ -1,0 +1,1144 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 7df96b18c230490a9a0a9e2307226333
+      name: Templates
+    - uuid: 57b7ae836ca64446ba2c296389c009b7
+      name: Templates/Modules
+    - uuid: 36bff6c29af64692839d077febfc7079
+      name: 'Templates/Network devices'
+  host_groups:
+    - uuid: e168cee9b9084dd2addb0ae075da17ff
+      name: AP
+  templates:
+    - uuid: 92ef79d7d4a045128ba2f10b42a253c5
+      template: 'Cisco AP by SNMP'
+      name: 'Cisco AP by SNMP'
+      groups:
+        - name: Templates
+      items:
+        - uuid: bba0e7df436a46929c51a50db8f34fb6
+          name: 'Client Count'
+          type: SNMP_AGENT
+          snmp_oid: '1.3.6.1.4.1.9.9.513.1.1.1.1.72.{$AP.SNMPINDEX}'
+          key: bsnAPClientCount
+          delay: 3m
+          description: 'Client Count on AP'
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 10m
+          tags:
+            - tag: component
+              value: Inventory
+        - uuid: 8394740c939f48b09d3888e781ec8ee9
+          name: 'Connected to device'
+          type: SNMP_AGENT
+          snmp_oid: '1.3.6.1.4.1.9.9.623.1.3.1.1.6.{$AP.SNMPINDEX}.1'
+          key: bsnAPConnectedToDevice
+          delay: 1h
+          value_type: CHAR
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 12h
+        - uuid: d8f2e7ffb4a849748d5ae3f85291c296
+          name: 'Connected to port'
+          type: SNMP_AGENT
+          snmp_oid: '1.3.6.1.4.1.9.9.623.1.3.1.1.9.{$AP.SNMPINDEX}.1'
+          key: bsnAPConnectedToDevicePort
+          delay: 1h
+          value_type: CHAR
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 12h
+        - uuid: 297b4658f5994183a496daad716afef4
+          name: 'Ethernet MAC'
+          type: SNMP_AGENT
+          snmp_oid: '1.3.6.1.4.1.14179.2.2.1.1.33.{$AP.SNMPINDEX}'
+          key: bsnAPeMACAddress
+          delay: 6h
+          value_type: CHAR
+          description: 'The Ethernet MAC address of an AP.'
+          inventory_link: MACADDRESS_A
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 12h
+        - uuid: f3f95471a6cc4e97bb7b2c8afad0b760
+          name: 'IP Address'
+          type: SNMP_AGENT
+          snmp_oid: '1.3.6.1.4.1.14179.2.2.1.1.19.{$AP.SNMPINDEX}'
+          key: bsnAPIpAddress
+          delay: 15m
+          value_type: CHAR
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 12h
+        - uuid: b909a34d6c1c4351a99ac1695823e00a
+          name: Location
+          type: SNMP_AGENT
+          snmp_oid: '1.3.6.1.4.1.14179.2.2.1.1.4.{$AP.SNMPINDEX}'
+          key: bsnAPLocation
+          delay: 6h
+          value_type: CHAR
+          description: |
+            User specified location of this AP.
+            While configuring AP, user should specify a location for
+            the AP so that its easy to figure out
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 12h
+        - uuid: eb3644a5be884155a2d052fc875721c5
+          name: Model
+          type: SNMP_AGENT
+          snmp_oid: '1.3.6.1.4.1.14179.2.2.1.1.16.{$AP.SNMPINDEX}'
+          key: bsnAPModel
+          delay: 6h
+          value_type: CHAR
+          description: 'AIRESPACE-WIRELESS-MIB::bsnAPModel'
+          inventory_link: HARDWARE
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 12h
+          tags:
+            - tag: component
+              value: system
+        - uuid: aa760794c5c447d79c5750e9b24ab57b
+          name: 'Operation Status'
+          type: SNMP_AGENT
+          snmp_oid: '1.3.6.1.4.1.14179.2.2.1.1.6.{$AP.SNMPINDEX}'
+          key: bsnAPOperationStatus
+          delay: 5m
+          value_type: CHAR
+          description: 'AIRESPACE-WIRELESS-MIB::bsnAPOperationStatus'
+          valuemap:
+            name: 'AIRESPACE-WIRELESS-MIB::bsnAPOperationStatus'
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 6h
+          triggers:
+            - uuid: 7f2015cd289e479ba2a9857356094ac5
+              expression: 'last(/Cisco AP by SNMP/bsnAPOperationStatus,#3)<>1'
+              name: 'Operational status is not associated'
+              priority: AVERAGE
+        - uuid: 24aae99a00b54806b631efd3f2c970a1
+          name: 'Radio MAC'
+          type: SNMP_AGENT
+          snmp_oid: '1.3.6.1.4.1.14179.2.2.1.1.1.{$AP.SNMPINDEX}'
+          key: bsnAPrMACAddress
+          delay: 6h
+          value_type: CHAR
+          description: 'The Radio MAC address of an AP.'
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 12h
+        - uuid: 4842421194f64e218b4ac2ea01fac1d6
+          name: 'Serial Number'
+          type: SNMP_AGENT
+          snmp_oid: '1.3.6.1.4.1.14179.2.2.1.1.17.{$AP.SNMPINDEX}'
+          key: bsnAPSerialNumber
+          delay: 6h
+          value_type: CHAR
+          description: 'AIRESPACE-WIRELESS-MIB::bsnAPSerialNumber'
+          inventory_link: SERIALNO_A
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 12h
+          tags:
+            - tag: component
+              value: system
+          triggers:
+            - uuid: 5c14704ed13f43e7bb5daf4b8058880c
+              expression: '(last(/Cisco AP by SNMP/bsnAPSerialNumber,#1)<>last(/Cisco AP by SNMP/bsnAPSerialNumber,#2))=1'
+              name: 'Serial number was changed'
+              priority: INFO
+              manual_close: 'YES'
+        - uuid: 7c2ae050e423433b8af58f77dcb987e4
+          name: 'Software Version'
+          type: SNMP_AGENT
+          snmp_oid: '1.3.6.1.4.1.14179.2.2.1.1.8.{$AP.SNMPINDEX}'
+          key: bsnAPSoftwareVersion
+          delay: 6h
+          value_type: CHAR
+          description: 'AIRESPACE-WIRELESS-MIB::bsnAPSoftwareVersion'
+          inventory_link: SOFTWARE
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 12h
+          tags:
+            - tag: component
+              value: system
+        - uuid: fdf2090ec8a344da930ae210dd16f5f8
+          name: UpTime
+          type: SNMP_AGENT
+          snmp_oid: '1.3.6.1.4.1.9.9.513.1.1.1.1.6.{$AP.SNMPINDEX}'
+          key: bsnAPUpTime
+          delay: 5m
+          units: uptime
+          description: 'AP UpTime'
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.01'
+        - uuid: e3ebc6d35e4f4211a031320a77dd2b9b
+          name: 'Ethernet If Duplex'
+          type: SNMP_AGENT
+          snmp_oid: '1.3.6.1.4.1.9.9.513.1.2.2.1.10.{$AP.SNMPINDEX}.0'
+          key: cLApEthernetIfDuplex
+          delay: 1h
+          trends: '0'
+          description: 'This object represents interface''s duplex mode an AP.'
+          valuemap:
+            name: EthernetIfDuplex
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 12h
+          triggers:
+            - uuid: a82ba8c49252430eb706103a7ba9c19a
+              expression: 'last(/Cisco AP by SNMP/cLApEthernetIfDuplex,#1)<>3'
+              name: 'Ethernet interface operation is not in full duplex mode'
+              priority: AVERAGE
+        - uuid: 07bcb937a69443199c880a36af02b726
+          name: 'Ethernet If Link Speed'
+          type: SNMP_AGENT
+          snmp_oid: '1.3.6.1.4.1.9.9.513.1.2.2.1.11.{$AP.SNMPINDEX}.0'
+          key: cLApEthernetIfLinkSpeed
+          delay: 1h
+          trends: '0'
+          units: bps
+          description: |
+            MIB: IF-MIB
+            An estimate of the interface's current bandwidth in units of 1,000,000 bits per second. If this object reports a value of `n`, then the speed of the interface is somewhere in the range of `n-500,000` to `n+499,999`.
+            For interfaces which do not vary in bandwidth or for those where no accurate estimation can be made, this object should contain the nominal bandwidth.
+            For a sub-layer which has no concept of bandwidth, this object should be zero.
+          valuemap:
+            name: EthernetIfDuplex
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '1000000'
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 12h
+          triggers:
+            - uuid: 887ca9f13cb84d209303f110fa73251a
+              expression: 'change(/Cisco AP by SNMP/cLApEthernetIfLinkSpeed)<0 and last(/Cisco AP by SNMP/cLApEthernetIfLinkSpeed)>0'
+              name: 'Ethernet has changed to lower speed than it was before'
+              opdata: 'Current reported speed: {ITEM.LASTVALUE1}'
+              priority: AVERAGE
+              manual_close: 'YES'
+        - uuid: 052dabc07d5f424f836e07219a32de1a
+          name: 'Last Reboot Reason'
+          type: SNMP_AGENT
+          snmp_oid: '1.3.6.1.4.1.9.9.513.1.1.1.1.16.{$AP.SNMPINDEX}'
+          key: cLApLastRebootReason
+          delay: 15m
+          description: 'This object represents the reason for the last reboot of the AP. none - ap reported a reboot reason code unknown to the controller. dot11gModeChange - 11g mode change ipAddressSet - set static ip address ipAddressReset - reset static ip address rebootFromController - ap reboot initiated from controller dhcpFallbackFail - could not fallback to dhcp discoveryFail - could not send discovery noJoinResponse - did not receive join response denyJoin - deny join attempt at the controller noConfigResponse - did not get config response configController - found configured or master controller imageUpgradeSuccess - image upgraded successfully imageOpcodeInvalid - invalid image data opcode imageCheckSumInvalid - invalid image md5 checksum imageDataTimeout - image data message timeout configFileInvalid - invalid config file imageDownloadError - image download process error rebootFromConsole - reboot command from ap console rapOverAir - root access point is connected over the air brownout - ap rebooted due to power failure powerLow - ap rebooted dued to low power also called as brownout crash - crashed due to software failure powerHigh - rebooted due to power spike powerLoss - rebooted due to power loss powerChange - rebooted due to change in power source componentFailure - rebooted due to component failure watchdog - rebooted due to watch dog timer reset.'
+          valuemap:
+            name: LastRebootReason
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 12h
+          tags:
+            - tag: component
+              value: Inventory
+        - uuid: 2eb537deb3844da6ae79dde29bb3b90a
+          name: 'Power Status'
+          type: SNMP_AGENT
+          snmp_oid: '1.3.6.1.4.1.9.9.513.1.1.1.1.20.{$AP.SNMPINDEX}'
+          key: cLApPowerStatus
+          delay: 15m
+          description: 'his object represents the power status of the AP low - The AP is drawing low power from Ethernet fifteendotfour - The AP is drawing 15.4 watts from Ethernet sixteendoteight - The AP is drawing 16.8 watts from Ethernet full - The power is high enough for normal operation of the AP. The power source could be Ethernet or external external - The power source is not from Ethernet. mixedmode - The power is high enough for operation of AP. In this state one radio will operate in full power mode while the other radio will be powered off.'
+          valuemap:
+            name: PowerStatus
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 12h
+          tags:
+            - tag: component
+              value: Inventory
+        - uuid: 0ac8d3d74baa4284a28e356462defb46
+          name: 'ICMP loss'
+          type: SIMPLE
+          key: 'icmppingloss[{$AP.IP}]'
+          delay: 3m
+          value_type: FLOAT
+          units: '%'
+          tags:
+            - tag: component
+              value: health
+            - tag: component
+              value: network
+        - uuid: 42f8a841f708443cb8b33f7d494d3b3b
+          name: 'ICMP response time'
+          type: SIMPLE
+          key: 'icmppingsec[{$AP.IP}]'
+          delay: 3m
+          value_type: FLOAT
+          units: s
+          tags:
+            - tag: component
+              value: health
+            - tag: component
+              value: network
+        - uuid: b415304740284bda842915402d315e5f
+          name: 'ICMP ping'
+          type: SIMPLE
+          key: 'icmpping[{$AP.IP}]'
+          delay: 3m
+          valuemap:
+            name: 'Service state'
+          tags:
+            - tag: component
+              value: health
+            - tag: component
+              value: network
+          triggers:
+            - uuid: f5e66ab5042549248f68ee6e8737b422
+              expression: 'max(/Cisco AP by SNMP/icmpping[{$AP.IP}],#3)=0'
+              name: 'Unavailable by ICMP ping'
+              priority: HIGH
+              description: |
+                Last value: {ITEM.LASTVALUE1}.
+                Last three attempts returned timeout.  Please check device connectivity.
+      tags:
+        - tag: class
+          value: network
+        - tag: target
+          value: cisco
+        - tag: target
+          value: cisco-AP
+      macros:
+        - macro: '{$ICMP_LOSS_WARN}'
+          value: '30'
+        - macro: '{$ICMP_RESPONSE_TIME_WARN}'
+          value: '0.3'
+      valuemaps:
+        - uuid: badcee01d3bb40bfaddef33c0e9bf8c8
+          name: 'AIRESPACE-WIRELESS-MIB::bsnAPOperationStatus'
+          mappings:
+            - value: '1'
+              newvalue: associated
+            - value: '2'
+              newvalue: disassociating
+            - value: '3'
+              newvalue: downloading
+        - uuid: eee2727f8a124093bcb595ac2ed8f9f4
+          name: EthernetIfDuplex
+          mappings:
+            - value: '1'
+              newvalue: unknown
+            - value: '2'
+              newvalue: halfduplex
+            - value: '3'
+              newvalue: fullduplex
+            - value: '4'
+              newvalue: auto
+        - uuid: e490c063cc3640369b947951e8b96419
+          name: LastRebootReason
+          mappings:
+            - value: '0'
+              newvalue: none
+            - value: '1'
+              newvalue: dot11gModeChange
+            - value: '2'
+              newvalue: ipAddressSet
+            - value: '3'
+              newvalue: ipAddressReset
+            - value: '4'
+              newvalue: rebootFromController
+            - value: '5'
+              newvalue: dhcpFallbackFail
+            - value: '6'
+              newvalue: discoveryFail
+            - value: '7'
+              newvalue: noJoinResponse
+            - value: '8'
+              newvalue: denyJoin
+            - value: '9'
+              newvalue: noConfigResponse
+            - value: '10'
+              newvalue: configController
+            - value: '11'
+              newvalue: imageUpgradeSuccess
+            - value: '12'
+              newvalue: imageOpcodeInvalid
+            - value: '13'
+              newvalue: imageCheckSumInvalid
+            - value: '14'
+              newvalue: imageDataTimeout
+            - value: '15'
+              newvalue: configFileInvalid
+            - value: '16'
+              newvalue: imageDownloadError
+            - value: '17'
+              newvalue: rebootFromConsole
+            - value: '18'
+              newvalue: rapOverAir
+            - value: '19'
+              newvalue: powerLow
+            - value: '20'
+              newvalue: crash
+            - value: '21'
+              newvalue: powerHigh
+            - value: '22'
+              newvalue: powerLoss
+            - value: '23'
+              newvalue: powerChange
+            - value: '24'
+              newvalue: componentFailure
+            - value: '25'
+              newvalue: watchdog
+        - uuid: b4a51a45f1a949538154857f57e4f6b0
+          name: PowerStatus
+          mappings:
+            - value: '1'
+              newvalue: low
+            - value: '2'
+              newvalue: fifteendotfour
+            - value: '3'
+              newvalue: sixteendoteight
+            - value: '4'
+              newvalue: full
+            - value: '5'
+              newvalue: external
+            - value: '6'
+              newvalue: mixedmode
+        - uuid: e614a9ce11df4be99df7070f2f9842ea
+          name: 'Service state'
+          mappings:
+            - value: '0'
+              newvalue: Down
+            - value: '1'
+              newvalue: Up
+    - uuid: 1903846af2b84ce987d390c869593a12
+      template: 'Cisco Catalyst 9800 by SNMP'
+      name: 'Cisco Catalyst 9800 by SNMP'
+      description: |
+        Zabbix template for Cisco Catalyst 9800 series wireless controller.
+        Needs IOS-XE 17.11 or later software image to get some of the SNMP MIBs on this template.
+        Tested on IOS-XE 17.12.3 and Zabbix 6.0.29 LTS.
+        
+        This template focuses on wireless-related statuses like AP association, AP channel, or wireless client per SSID.
+        Use the "Cisco IOS by SNMP" template to get general IOS-XE statuses like CPU utilization, memory usage, or interface status.
+        
+        This template uses OID and Standard MIB. No need to install vendor MIBs.
+        AIRESPACE-REF-MIB.my
+        AIRESPACE-WIRELESS-CAPABILITY.my
+        AIRESPACE-WIRELESS-MIB.my
+        CISCO-LWAPP-AP-MIB.my
+        CISCO-LWAPP-DOT11-MIB.my
+        CISCO-LWAPP-RF-MIB.my
+        CISCO-LWAPP-TC-MIB.my
+        CISCO-LWAPP-WLAN-MIB.my
+        CISCO-SMI.my
+        CISCO-TC.my
+        ENTITY-MIB.my
+        Please refer to the below MIBs for what information OID can take.
+        https://github.com/cisco/cisco-mibs
+      templates:
+        - name: 'Cisco Inventory SNMP'
+        - name: 'ICMP Ping'
+      groups:
+        - name: Templates
+      items:
+        - uuid: dd2ff6f63c9d40d5b61ee3a6d42cd864
+          name: 'Rogue AP Count'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#ROGUEAP},1.3.6.1.4.1.14179.2.1.7.1.1]'
+          key: bsnRogueAPEntry
+          delay: 15m
+          history: 90d
+          description: |
+            AIRESPACE-WIRELESS-MIB::bsnRogueAPDot11MacAddress
+            Count # of RogueAP
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var obj = JSON.parse(value);
+                  // Return the number of rows in the array
+                  return obj.length;
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 6h
+          tags:
+            - tag: component
+              value: network
+        - uuid: 936063a57ef54d5597883906df8486bf
+          name: 'Rogue Client Count'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#ROGUECLIENT},1.3.6.1.4.1.14179.2.1.14.1.1]'
+          key: bsnRogueClientEntry
+          delay: 15m
+          history: 90d
+          description: |
+            AIRESPACE-WIRELESS-MIB::bsnRogueClientDot11MacAddress
+            Count # of RogueClient
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var obj = JSON.parse(value);
+                  // Return the number of rows in the array
+                  return obj.length;
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 6h
+          tags:
+            - tag: component
+              value: network
+        - uuid: af4c43cb6b9d4be19345fa58a6ffcb58
+          name: 'Inventory - Current Number of AP'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.9.9.513.1.3.35.0
+          key: cLApGlobalAPConnectCount
+          delay: 5m
+          description: 'CISCO-LWAPP-AP-MIB::cLApGlobalAPConnectCount.0'
+          tags:
+            - tag: component
+              value: Inventory
+        - uuid: c28ec71ee39045c7aa6214bd4c7a03b3
+          name: 'Inventory - Number of APs Supported'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.9.9.513.1.3.28.0
+          key: cLApGlobalMaxApsSupported
+          delay: 6h
+          history: 30d
+          trends: '0'
+          description: 'CISCO-LWAPP-AP-MIB::cLApGlobalMaxApsSupported.0'
+          tags:
+            - tag: component
+              value: Inventory
+        - uuid: c57d7bbeb4ad4eb390c7eaa4bc639f05
+          name: 'HA Peer Hotstandby Status'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.9.9.843.1.3.4.0
+          key: cLHaPeerHotStandbyEvent
+          history: 90d
+          description: 'CISCO-LWAPP-HA-MIB::cLHaPeerHotStandbyEvent'
+          valuemap:
+            name: 'CISCO-LWAPP-HA-MIB::cLHaPeerHotStandbyEvent'
+          tags:
+            - tag: component
+              value: network
+          triggers:
+            - uuid: ee2b5e036c8d45d298b504b0e09bbe59
+              expression: 'change(/Cisco Catalyst 9800 by SNMP/cLHaPeerHotStandbyEvent)<>0'
+              name: 'HA Peer Hotstandby status changed'
+              priority: WARNING
+              description: 'Track CISCO-LWAPP-HA-MIB::cLHaPeerHotStandbyEvent'
+              manual_close: 'YES'
+        - uuid: 719ce1427daf4b8d8731b4b3bfa6b3cc
+          name: 'SNMP Trap - Channel Changed'
+          type: SNMP_TRAP
+          key: 'snmptrap["SNMPv2-SMI::enterprises.14179.2.6.3.16"]'
+          history: 2w
+          value_type: LOG
+          description: 'AIRESPACE-WIRELESS-MIB::bsnAPCurrentChannelChanged'
+          tags:
+            - tag: component
+              value: network
+          triggers:
+            - uuid: 868fb423dc94467a936e2e1e0c9c3eaf
+              expression: 'find(/Cisco Catalyst 9800 by SNMP/snmptrap["SNMPv2-SMI::enterprises.14179.2.6.3.16"],,"like","SNMPv2-SMI::enterprises.14179.2.6.3.16")=1'
+              recovery_mode: NONE
+              name: 'Channel Updated Trap on {{ITEM.VALUE}.regsub("SNMPv2\-SMI\:\:enterprises\.14179\.2\.2\.1\.1\.3\..*\=\s(.*)",\1)} Primaly Channel: {{ITEM.VALUE}.regsub("SNMPv2\-SMI\:\:enterprises\.14179\.2\.6\.2\.23\..*\=\s(.*)",\1)}'
+              status: DISABLED
+              priority: INFO
+              description: |
+                AIRESPACE-WIRELESS-MIB::bsnAPCurrentChannelChanged
+                
+                APNAME
+                AIRESPACE-WIRELESS-MIB::bsnAPName
+                
+                find(/Cisco Catalyst 9800 by SNMP/snmptrap["SNMPv2-SMI::enterprises.14179.2.6.3.16"],86400)=1
+              manual_close: 'YES'
+              tags:
+                - tag: APNAME
+                  value: '{{ITEM.VALUE}.regsub("SNMPv2\-SMI\:\:enterprises\.14179\.2\.2\.1\.1\.3.*\=\s(.*)",\1)}'
+        - uuid: 786fc58513eb4423879004f71faeb78d
+          name: 'SNMP Trap - RadarChannelDetected'
+          type: SNMP_TRAP
+          key: 'snmptrap["SNMPv2-SMI::enterprises.14179.2.6.3.81"]'
+          history: 90d
+          value_type: LOG
+          description: 'AIRESPACE-WIRELESS-MIB::bsnRadarChannelDetected'
+          tags:
+            - tag: component
+              value: network
+          triggers:
+            - uuid: c3f611b0ecde4b6da4ca254125f0f08d
+              expression: 'find(/Cisco Catalyst 9800 by SNMP/snmptrap["SNMPv2-SMI::enterprises.14179.2.6.3.81"],,"like","SNMPv2-SMI::enterprises.14179.2.6.3.81")=1'
+              recovery_mode: NONE
+              name: 'DFS Detected on {{ITEM.VALUE}.regsub("SNMPv2\-SMI\:\:enterprises\.14179\.2\.2\.1\.1\.3\..*\=\s(.*)",\1)} Channel: {{ITEM.VALUE}.regsub("SNMPv2\-SMI\:\:enterprises\.14179\.2\.2\.2\.1\.4\..*\=\s(.*)",\1)}'
+              priority: INFO
+              description: |
+                Trigger SNMP OID
+                AIRESPACE-WIRELESS-MIB::bsnRadarChannelDetected
+                
+                APNAME
+                AIRESPACE-WIRELESS-MIB::bsnAPName
+                
+                CHANNEL
+                AIRESPACE-WIRELESS-MIB::bsnAPIfPhyChannelNumber
+                
+                find(/Cisco Catalyst 9800 by SNMP/snmptrap["SNMPv2-SMI::enterprises.14179.2.6.3.81"],86400)=1
+              type: MULTIPLE
+              manual_close: 'YES'
+              tags:
+                - tag: APNAME
+                  value: '{{ITEM.VALUE}.regsub("SNMPv2\-SMI\:\:enterprises\.14179\.2\.2\.1\.1\.3.*\=\s(.*)",\1)}'
+                - tag: CHANNEL
+                  value: '{{ITEM.VALUE}.regsub("SNMPv2\-SMI\:\:enterprises\.14179\.2\.2\.2\.1\.4\..*\=\s(.*)",\1)}'
+        - uuid: 21ed5acca9f747fcb84084311c964f27
+          name: 'SNMP Trap - AP disassociation'
+          type: SNMP_TRAP
+          key: 'snmptrap[SNMPv2-SMI::enterprises.14179.2.6.3.8$|SNMPv2-SMI::enterprises.9.9.513.0.4$]'
+          history: 2w
+          value_type: LOG
+          description: |
+            AIRESPACE-WIRELESS-MIB::bsnAPDisassociated
+            CISCO-LWAPP-AP-MIB::ciscoLwappApAssociated
+          tags:
+            - tag: component
+              value: network
+          triggers:
+            - uuid: 0eaba496846642cab39f3451fdce776a
+              expression: 'find(/Cisco Catalyst 9800 by SNMP/snmptrap[SNMPv2-SMI::enterprises.14179.2.6.3.8$|SNMPv2-SMI::enterprises.9.9.513.0.4$],,"regexp","14179\\.2\\.6\\.3\\.8")=1'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'find(/Cisco Catalyst 9800 by SNMP/snmptrap[SNMPv2-SMI::enterprises.14179.2.6.3.8$|SNMPv2-SMI::enterprises.9.9.513.0.4$],,"regexp","9\\.9\\.513\\.0\\.4")=1'
+              correlation_mode: TAG_VALUE
+              correlation_tag: APNAME
+              name: 'AP Name: {{ITEM.VALUE}.regsub("SNMPv2\-SMI\:\:enterprises\.14179\.2\.2\.1\.1\.3\..*\=\s(.*)",\1)} Disjoined'
+              priority: WARNING
+              description: |
+                Problem trigger TrapOID
+                AIRESPACE-WIRELESS-MIB::bsnAPDisassociated
+                
+                Recovery trigger TrapOID
+                CISCO-LWAPP-AP-MIB::ciscoLwappApAssociated
+                
+                Tag "APNAME" from
+                AIRESPACE-WIRELESS-MIB::bsnAPName (problem)
+                CISCO-LWAPP-AP-MIB::cLApName (recovery)
+              type: MULTIPLE
+              manual_close: 'YES'
+              tags:
+                - tag: APNAME
+                  value: '{{ITEM.VALUE}.regsub(".*\.1\.1.*\=\s\"(.*)\"$",\1)}'
+      discovery_rules:
+        - uuid: 25285293f80b4aa6bb473da008620040
+          name: bsnAPTable
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#APNAME},1.3.6.1.4.1.14179.2.2.1.1.3,{#APOPERATIONSTATUS},1.3.6.1.4.1.14179.2.2.1.1.6,{#APGROUP},1.3.6.1.4.1.9.9.513.1.1.1.1.104,{#APIP},1.3.6.1.4.1.14179.2.2.1.1.19]'
+          key: bsnAPEntry
+          delay: 1h
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          description: |
+            AP Name
+            AIRESPACE-WIRELESS-MIB::bsnAPName
+            
+            AP Operation Status
+            AIRESPACE-WIRELESS-MIB::bsnAPOperationStatus
+          host_prototypes:
+            - uuid: 8250730e316f412eb077124d3a22eb75
+              host: '{#APNAME}'
+              name: '{#APNAME}'
+              inventory_mode: AUTOMATIC
+              group_links:
+                - group:
+                    name: AP
+              group_prototypes:
+                - name: 'AP/{#APGROUP}'
+              templates:
+                - name: 'Cisco AP by SNMP'
+              macros:
+                - macro: '{$AP.IP}'
+                  value: '{#APIP}'
+                - macro: '{$AP.SNMPINDEX}'
+                  value: '{#SNMPINDEX}'
+              tags:
+                - tag: role
+                  value: AP
+        - uuid: 38ff4c1e53b04ce5a3d18a8f1a086b89
+          name: cLMobilityGroupMembersOperEntry
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#MOBILITYPEER},1.3.6.1.4.1.9.9.576.1.9.1.2]'
+          key: cLMobilityGroupMembersOperEntry
+          delay: 1h
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          description: |
+            CISCO-LWAPP-MOBILITY-MIB::cLMobilityGroupMembersOperEntry
+            CISCO-LWAPP-MOBILITY-MIB::cLMobilityGroupMembersOperNodeAddress
+          item_prototypes:
+            - uuid: 8236d6435aba480e8bca7977836d5b3c
+              name: 'MobilityGroupMembersOperControlPathStatus [{#MOBILITYPEER}]'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.9.9.576.1.9.1.5.{#SNMPINDEX}'
+              key: 'cLMobilityGroupMembersOperControlPathStatus[{#MOBILITYPEER}]'
+              description: 'CISCO-LWAPP-MOBILITY-MIB::cLMobilityGroupMembersOperControlPathStatus'
+              valuemap:
+                name: cLMobilityGroupMembersOperPathStatus
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 3h
+              trigger_prototypes:
+                - uuid: d97a723cdb1546609c462521d0415a7d
+                  expression: |
+                    last(/Cisco Catalyst 9800 by SNMP/cLMobilityGroupMembersOperControlPathStatus[{#MOBILITYPEER}])=2
+                    and
+                    (last(/Cisco Catalyst 9800 by SNMP/cLMobilityGroupMembersOperControlPathStatus[{#MOBILITYPEER}],#1)<>last(/Cisco Catalyst 9800 by SNMP/cLMobilityGroupMembersOperControlPathStatus[{#MOBILITYPEER}],#2))
+                  recovery_mode: RECOVERY_EXPRESSION
+                  recovery_expression: 'find(/Cisco Catalyst 9800 by SNMP/cLMobilityGroupMembersOperControlPathStatus[{#MOBILITYPEER}],600,,"1")=1'
+                  correlation_mode: TAG_VALUE
+                  correlation_tag: PEER
+                  name: 'Mobility Peer status down [{#MOBILITYPEER}]'
+                  priority: WARNING
+                  description: |
+                    Tracking 
+                    CISCO-LWAPP-MOBILITY-MIB::cLMobilityGroupMembersOperControlPathStatus
+                  manual_close: 'YES'
+                  tags:
+                    - tag: PEER
+                      value: '[{#MOBILITYPEER}]'
+            - uuid: 928e5a3c779f429e9b182567fa44e040
+              name: 'MobilityGroupMembersOperDataPathStatus [{#MOBILITYPEER}]'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.9.9.576.1.9.1.4.{#SNMPINDEX}'
+              key: 'cLMobilityGroupMembersOperDataPathStatus[{#MOBILITYPEER}]'
+              description: 'CISCO-LWAPP-MOBILITY-MIB::cLMobilityGroupMembersOperControlPathStatus'
+              valuemap:
+                name: cLMobilityGroupMembersOperPathStatus
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 3h
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  // Parse the JSON string to convert it into a JavaScript object
+                  var obj = JSON.parse(value);
+                  
+                  // Function to convert hexadecimal to decimal and format it as an IPv4 address
+                  function hexToIpv4Address(hexString) {
+                    // Remove spaces and split the hexadecimal string into an array
+                    var hexArray = hexString.trim().split(' ');
+                  
+                    // Convert each hexadecimal value to decimal and format it as an IPv4 address
+                    var decimalArray = [];
+                    for (var i = 0; i < hexArray.length; i++) {
+                      decimalArray.push(parseInt(hexArray[i], 16));
+                    }
+                  
+                    // Convert the array of numbers to an IPv4 address string
+                    var ipAddress = decimalArray.join('.');
+                    return ipAddress;
+                  }
+                  
+                  // Function to convert hexadecimal to an IPv6 address format
+                  function hexToIpv6Address(hexString) {
+                    // Remove spaces and split the hexadecimal string into an array
+                    var hexArray = hexString.trim().split(' ');
+                  
+                    // Convert each hexadecimal value to a 2-digit hexadecimal string and pair them
+                    var pairs = [];
+                    for (var i = 0; i < hexArray.length; i += 2) {
+                      pairs.push(hexArray[i] + hexArray[i + 1]);
+                    }
+                  
+                    // Join the pairs with colons to format as an IPv6 address
+                    var ipv6Address = pairs.join(':');
+                    return ipv6Address;
+                  }
+                  
+                  // Function to determine if the input is IPv4 or IPv6
+                  function isIpv4(hexString) {
+                    // If the array length is 4, it's IPv4; if longer, it's IPv6
+                    var hexArray = hexString.trim().split(' ');
+                    return hexArray.length === 4;
+                  }
+                  
+                  // Convert {#MOBILITYPEER} of each element to the appropriate IP address format
+                  for (var i = 0; i < obj.length; i++) {
+                    if (isIpv4(obj[i]["{#MOBILITYPEER}"])) {
+                      obj[i]["{#MOBILITYPEER}"] = hexToIpv4Address(obj[i]["{#MOBILITYPEER}"]);
+                    } else {
+                      obj[i]["{#MOBILITYPEER}"] = hexToIpv6Address(obj[i]["{#MOBILITYPEER}"]);
+                    }
+                  }
+                  
+                  // Convert the object back to a JSON string and return it
+                  return JSON.stringify(obj);
+        - uuid: 5847c3ef43a849f0930943331339ecb2
+          name: cLWlanProfileName
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},1.3.6.1.4.1.9.9.512.1.1.1.1.3]'
+          key: cLWlanProfileName
+          delay: 1h
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          description: 'CISCO-LWAPP-WLAN-MIB::cLWlanProfileName'
+          item_prototypes:
+            - uuid: 0995145307004624a54590732c43296d
+              name: 'WLAN - {#SNMPVALUE} Administrative Status'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.14179.2.1.1.1.6.{#SNMPINDEX}'
+              key: 'bsnDot11EssAdminStatus-[{#SNMPVALUE}]'
+              value_type: CHAR
+              description: 'AIRESPACE-WIRELESS-MIB::bsnDot11EssAdminStatus'
+              valuemap:
+                name: 'AIRESPACE-WIRELESS-MIB::bsnDot11EssAdminStatus'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 30m
+              tags:
+                - tag: component
+                  value: WLAN
+            - uuid: 4fc71ce361cc40cd84f5fc8a24745118
+              name: 'WLAN - {#SNMPVALUE} Number of Clients'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.14179.2.1.1.1.38.{#SNMPINDEX}'
+              key: 'bsnDot11EssNumberOfMobileStations-[{#SNMPVALUE}]'
+              description: 'AIRESPACE-WIRELESS-MIB::bsnDot11EssNumberOfMobileStations'
+              tags:
+                - tag: component
+                  value: WLAN
+          graph_prototypes:
+            - uuid: 2171914368f8429f94afb9927a81e195
+              name: 'WLAN - {#SNMPVALUE} Number of Clients'
+              graph_items:
+                - color: 0080FF
+                  item:
+                    host: 'Cisco Catalyst 9800 by SNMP'
+                    key: 'bsnDot11EssNumberOfMobileStations-[{#SNMPVALUE}]'
+      tags:
+        - tag: class
+          value: network
+        - tag: target
+          value: cisco
+        - tag: target
+          value: cisco-catalyst-9800
+      valuemaps:
+        - uuid: fe4c43a2da0c4068bc37c9d7e6a029fb
+          name: 'AIRESPACE-WIRELESS-MIB::bsnAPOperationStatus'
+          mappings:
+            - value: '1'
+              newvalue: associated
+            - value: '2'
+              newvalue: disassociating
+            - value: '3'
+              newvalue: downloading
+        - uuid: 4af351ff6288425da85693782199c489
+          name: 'AIRESPACE-WIRELESS-MIB::bsnDot11EssAdminStatus'
+          mappings:
+            - value: '0'
+              newvalue: disable
+            - value: '1'
+              newvalue: enable
+        - uuid: 1bcf503cacf2469c87640f3644dcef46
+          name: 'CISCO-LWAPP-AP-MIB::cLAp11ChannelBandwidth'
+          mappings:
+            - value: '1'
+              newvalue: 5MHz
+            - value: '2'
+              newvalue: 10MHz
+            - value: '3'
+              newvalue: 20MHz
+            - value: '4'
+              newvalue: 40MHz
+            - value: '5'
+              newvalue: 80MHz
+            - value: '6'
+              newvalue: 160MHz
+            - value: '7'
+              newvalue: 80MHz+80MHz
+        - uuid: c7ced9cfc6274ebebf457e30d9561cde
+          name: 'CISCO-LWAPP-HA-MIB::cLHaPeerHotStandbyEvent'
+          mappings:
+            - value: '0'
+              newvalue: none
+            - value: '1'
+              newvalue: 'HA Peer Hotstandby'
+        - uuid: c005b50e977241eca3718c37e3089232
+          name: cLMobilityGroupMembersOperPathStatus
+          mappings:
+            - value: '1'
+              newvalue: up
+            - value: '2'
+              newvalue: down
+    - uuid: 90c99055648f40df8517005a7670158c
+      template: 'Cisco Inventory SNMP'
+      name: 'Cisco Inventory SNMP'
+      description: |
+        Template Cisco Inventory
+        
+        MIBs used:
+        ENTITY-MIB
+        SNMPv2-MIB
+        
+        Template tooling version used: 0.41
+      groups:
+        - name: Templates/Modules
+      items:
+        - uuid: edb172996a954eb986c97bcfee052a36
+          name: 'Hardware model name'
+          type: SNMP_AGENT
+          snmp_oid: 'walk[1.3.6.1.2.1.47.1.1.1.1.13.1000,1.3.6.1.2.1.47.1.1.1.1.13.1001]'
+          key: system.hw.model
+          delay: 1h
+          history: 2w
+          value_type: CHAR
+          description: 'MIB: ENTITY-MIB'
+          inventory_link: MODEL
+          preprocessing:
+            - type: REGEX
+              parameters:
+                - '\"(.*?)\"'
+                - \1
+              error_handler: DISCARD_VALUE
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            - tag: component
+              value: system
+        - uuid: 3b54e3692fe643e99704767f9a58a1c2
+          name: 'Hardware serial number'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.2.1.47.1.1.1.1.11.1
+          key: system.hw.serialnumber
+          delay: 1h
+          history: 2w
+          value_type: CHAR
+          description: 'MIB: ENTITY-MIB'
+          inventory_link: SERIALNO_A
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            - tag: component
+              value: system
+          triggers:
+            - uuid: 4100a7125272484c81c4f599eff82793
+              expression: 'last(/Cisco Inventory SNMP/system.hw.serialnumber,#1)<>last(/Cisco Inventory SNMP/system.hw.serialnumber,#2) and length(last(/Cisco Inventory SNMP/system.hw.serialnumber))>0'
+              name: 'Device has been replaced'
+              event_name: 'Device has been replaced (new serial number received)'
+              priority: INFO
+              description: 'Device serial number has changed. Ack to close'
+              manual_close: 'YES'
+              tags:
+                - tag: scope
+                  value: notice
+        - uuid: 51b1c178adff415bbe36a4363d6e06c1
+          name: 'Operating system'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.2.1.1.1.0
+          key: 'system.sw.os[sysDescr.0]'
+          delay: 1h
+          history: 2w
+          value_type: CHAR
+          description: 'MIB: SNMPv2-MIB'
+          inventory_link: OS
+          preprocessing:
+            - type: REGEX
+              parameters:
+                - 'Version (.+), RELEASE'
+                - \1
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            - tag: component
+              value: os
+          triggers:
+            - uuid: e417e0edd4eb417d99816dd9cf4f20e9
+              expression: 'last(/Cisco Inventory SNMP/system.sw.os[sysDescr.0],#1)<>last(/Cisco Inventory SNMP/system.sw.os[sysDescr.0],#2) and length(last(/Cisco Inventory SNMP/system.sw.os[sysDescr.0]))>0'
+              name: 'Operating system description has changed'
+              priority: INFO
+              description: 'Operating system description has changed. Possible reasons that system has been updated or replaced. Ack to close.'
+              manual_close: 'YES'
+              tags:
+                - tag: scope
+                  value: notice
+      discovery_rules:
+        - uuid: 0908cfd197214f6c8092bbd426ef83bf
+          name: 'Entity Serial Numbers Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#ENT_CLASS},1.3.6.1.2.1.47.1.1.1.1.5,{#ENT_NAME},1.3.6.1.2.1.47.1.1.1.1.7,{#ENT_SN},1.3.6.1.2.1.47.1.1.1.1.11]'
+          key: entity_sn.discovery
+          delay: 1h
+          filter:
+            evaltype: AND
+            conditions:
+              - macro: '{#ENT_CLASS}'
+                value: ^3$
+              - macro: '{#ENT_SN}'
+                value: .+
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: 3a6277e70ce6448b857bfc170ded8542
+              name: '{#ENT_NAME}: Hardware serial number'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.2.1.47.1.1.1.1.11.{#SNMPINDEX}'
+              key: 'system.hw.serialnumber[entPhysicalSerialNum.{#SNMPINDEX}]'
+              delay: 1h
+              history: 2w
+              value_type: CHAR
+              description: 'MIB: ENTITY-MIB'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                - tag: component
+                  value: system
+              trigger_prototypes:
+                - uuid: ff15aaac7c4947b6a07a38dec4d1466d
+                  expression: 'last(/Cisco Inventory SNMP/system.hw.serialnumber[entPhysicalSerialNum.{#SNMPINDEX}],#1)<>last(/Cisco Inventory SNMP/system.hw.serialnumber[entPhysicalSerialNum.{#SNMPINDEX}],#2) and length(last(/Cisco Inventory SNMP/system.hw.serialnumber[entPhysicalSerialNum.{#SNMPINDEX}]))>0'
+                  name: '{#ENT_NAME}: Device has been replaced'
+                  event_name: '{#ENT_NAME}: Device has been replaced (new serial number received)'
+                  priority: INFO
+                  description: 'Device serial number has changed. Ack to close'
+                  manual_close: 'YES'
+                  tags:
+                    - tag: scope
+                      value: notice
+    - uuid: 37e5eb5606bc4abba66c8b20381a1e8a
+      template: 'ICMP Ping'
+      name: 'ICMP Ping'
+      description: |
+        Template Net ICMP Ping
+        
+        Generated by official Zabbix template tool "Templator"
+      vendor:
+        name: Zabbix
+        version: 7.0-0
+      groups:
+        - name: 'Templates/Network devices'
+      items:
+        - uuid: db5a94f6cea14deba957202b2f014469
+          name: 'ICMP ping'
+          type: SIMPLE
+          key: icmpping
+          valuemap:
+            name: 'Service state'
+          tags:
+            - tag: component
+              value: health
+            - tag: component
+              value: network
+          triggers:
+            - uuid: b030876299434f3ba43e11c584104a81
+              expression: 'max(/ICMP Ping/icmpping,#3)=0'
+              name: 'Unavailable by ICMP ping'
+              priority: HIGH
+              description: 'Last three attempts returned timeout.  Please check device connectivity.'
+              tags:
+                - tag: scope
+                  value: availability
+        - uuid: 04b21adaf422473a88df2c52786474ed
+          name: 'ICMP loss'
+          type: SIMPLE
+          key: icmppingloss
+          value_type: FLOAT
+          units: '%'
+          tags:
+            - tag: component
+              value: health
+            - tag: component
+              value: network
+          triggers:
+            - uuid: 42c4b0310aaf4b9c8cb502542b7dea90
+              expression: 'min(/ICMP Ping/icmppingloss,5m)>{$ICMP_LOSS_WARN} and min(/ICMP Ping/icmppingloss,5m)<100'
+              name: 'High ICMP ping loss'
+              opdata: 'Loss: {ITEM.LASTVALUE1}'
+              priority: WARNING
+              dependencies:
+                - name: 'Unavailable by ICMP ping'
+                  expression: 'max(/ICMP Ping/icmpping,#3)=0'
+              tags:
+                - tag: scope
+                  value: availability
+                - tag: scope
+                  value: performance
+        - uuid: a79e33e5fd264725b934f603fa071555
+          name: 'ICMP response time'
+          type: SIMPLE
+          key: icmppingsec
+          value_type: FLOAT
+          units: s
+          tags:
+            - tag: component
+              value: health
+            - tag: component
+              value: network
+          triggers:
+            - uuid: 32b4d8f3eba34bd380803410111d4b7f
+              expression: 'avg(/ICMP Ping/icmppingsec,5m)>{$ICMP_RESPONSE_TIME_WARN}'
+              name: 'High ICMP ping response time'
+              opdata: 'Value: {ITEM.LASTVALUE1}'
+              priority: WARNING
+              description: 'Average ICMP response time is too high.'
+              dependencies:
+                - name: 'High ICMP ping loss'
+                  expression: 'min(/ICMP Ping/icmppingloss,5m)>{$ICMP_LOSS_WARN} and min(/ICMP Ping/icmppingloss,5m)<100'
+                - name: 'Unavailable by ICMP ping'
+                  expression: 'max(/ICMP Ping/icmpping,#3)=0'
+              tags:
+                - tag: scope
+                  value: availability
+                - tag: scope
+                  value: performance
+      tags:
+        - tag: class
+          value: network
+        - tag: target
+          value: icmp
+      macros:
+        - macro: '{$ICMP_LOSS_WARN}'
+          value: '20'
+          description: 'Warning threshold of ICMP packet loss in %.'
+        - macro: '{$ICMP_RESPONSE_TIME_WARN}'
+          value: '0.3'
+          description: 'Warning threshold of the average ICMP response time in seconds.'
+      valuemaps:
+        - uuid: bdb5d65d925542eaa61c302dc40fbfe8
+          name: 'Service state'
+          mappings:
+            - value: '0'
+              newvalue: Down
+            - value: '1'
+              newvalue: Up
+  triggers:
+    - uuid: 73b1509a8f1d46788cceab95c91b9dff
+      expression: 'last(/Cisco Catalyst 9800 by SNMP/cLApGlobalAPConnectCount)=last(/Cisco Catalyst 9800 by SNMP/cLApGlobalMaxApsSupported)'
+      name: 'Maxmimum AP join limit has reached'
+      priority: AVERAGE
+      description: |
+        Trigger
+        CISCO-LWAPP-AP-MIB::cLApGlobalAPConnectCount.0
+        = CISCO-LWAPP-AP-MIB::cLApGlobalMaxApsSupported.0
+      manual_close: 'YES'
+      tags:
+        - tag: scope
+          value: capacity
